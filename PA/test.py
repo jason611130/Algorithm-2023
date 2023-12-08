@@ -1,10 +1,3 @@
-import matplotlib.pyplot as plt
-import numpy as np
-# 檔案路徑
-file_path = r'C:\Users\jason\OneDrive\文件\GitHub\Algorithm-2023\PA\input.txt'
-inputsize = [10,10]
-capacity = 2
-
 def extract_pairs(combination):
     x1, y1, x2, y2 = combination
     return (tuple((x1, y1)), tuple((x2, y2)))
@@ -33,37 +26,15 @@ def count_combinations(arrays):
 
     return combination_counts
 
+capacity = 2
+arr1 = [[2, 3, 1, 3], [1, 3, 1, 2], [1, 2, 1, 1], [1, 1, 1, 0], [1, 0, 0, 0]]
+arr2 = [[1, 0, 1, 1], [1, 1, 1, 2], [1, 2, 1, 3]]
+arr3 = [[0, 2, 1, 2], [1, 2, 1, 1], [1, 1, 2, 1], [2, 1, 3, 1], [3, 1, 3, 0]]
 
+arrays = [arr1, arr2, arr3]
 
+all_combination_counts = count_combinations(arrays)
 
-
-with open(file_path, 'r') as file:
-    lines = file.readlines()    
-    data = []
-    for line in lines:
-        words = line.split()
-        numbers = list(map(int, words))
-        data.append(numbers)
-
-arr = [[]]
-index = 0
-cnt = 0
-
-while(cnt<len(data)):
-    
-    value = data[cnt][1]
-    # print(value)
-    for i in range(value):
-        cnt = cnt+1
-        arr[index].append(data[cnt])
-    cnt = cnt+1
-    if cnt < len(data):
-        index = index + 1
-        arr.append([])
-
-
-fig, ax = plt.subplots()
-all_combination_counts = count_combinations(arr)
 for combination, count in all_combination_counts.items():
     
     if(count>capacity):
@@ -81,30 +52,5 @@ for combination, count in all_combination_counts.items():
             xle = max(x1,x2)
             yle = y1
     
-        # print(xls,yls,xle,yle)
+        print(xls,yls,xle,yle)
         print(f"({xls},{yls})({xle},{yle})有{count}條線")
-        plt.plot([xls,xle], [yls,yle], color="red")
-
-# for list in arr:
-#     print(list)
-
-for list in arr:
-    col = (np.random.random(), np.random.random(), np.random.random())
-    for i in range(len(list)):
-        plt.plot([list[i][0]+0.5,list[i][2]+0.5], [list[i][1]+0.5, list[i][3]+0.5], color=col)
-    
-
-
-
-plt.xlabel("X")
-plt.ylabel("Y")
-plt.title("routing")
-major_ticks_top_x = np.linspace(0,inputsize[0] ,inputsize[0]+1)
-major_ticks_top_y = np.linspace(0,inputsize[1] ,inputsize[1]+1)
-plt.xticks(major_ticks_top_x)
-plt.yticks(major_ticks_top_y)
-plt.xlim(0, inputsize[0])
-plt.ylim(0, inputsize[1])
-ax.grid(True, linestyle='--', linewidth=1, color='gray')
-
-plt.show()
