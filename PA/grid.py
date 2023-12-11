@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 # 檔案路徑
-file_path = r'C:\Users\jason\OneDrive\文件\GitHub\Algorithm-2023\PA\input.txt'
-inputsize = [10,10]
-capacity = 2
+file_path = r'C:\Users\jason\OneDrive\文件\GitHub\Algorithm-2023\PA\output.txt'
+inputsize = [60,60]
+capacity = 45
 
 def extract_pairs(combination):
     x1, y1, x2, y2 = combination
@@ -16,11 +16,8 @@ def count_combinations(arrays):
             
             pairs = extract_pairs(combination)
             samepairs = (pairs[1],pairs[0])
-            
-            
-
+        
             if(combination_counts.get(pairs, 0)>=combination_counts.get(samepairs, 0)):
-                
                 combination_counts[pairs] = combination_counts.get(pairs, 0) + 1
                 # print("                                                           pairs = ",pairs)
                 # print("pairs cnt = " ,combination_counts.get(pairs, 0))
@@ -33,10 +30,6 @@ def count_combinations(arrays):
 
     return combination_counts
 
-
-
-
-
 with open(file_path, 'r') as file:
     lines = file.readlines()    
     data = []
@@ -44,13 +37,13 @@ with open(file_path, 'r') as file:
         words = line.split()
         numbers = list(map(int, words))
         data.append(numbers)
+        numbers = []
 
 arr = [[]]
 index = 0
 cnt = 0
 
 while(cnt<len(data)):
-    
     value = data[cnt][1]
     # print(value)
     for i in range(value):
@@ -62,8 +55,16 @@ while(cnt<len(data)):
         arr.append([])
 
 
+
+# width_pixels = 1440
+# height_pixels = 1920
+# dpi = 100
+# width_inches = width_pixels / dpi
+# height_inches = height_pixels / dpi
+# plt.figure(figsize=(width_inches, height_inches))
 fig, ax = plt.subplots()
 all_combination_counts = count_combinations(arr)
+overflow = 0
 for combination, count in all_combination_counts.items():
     
     if(count>capacity):
@@ -80,7 +81,7 @@ for combination, count in all_combination_counts.items():
             yls = y1+1
             xle = max(x1,x2)
             yle = y1
-    
+        overflow = overflow +1
         # print(xls,yls,xle,yle)
         print(f"({xls},{yls})({xle},{yle})有{count}條線")
         plt.plot([xls,xle], [yls,yle], color="red")
@@ -94,8 +95,6 @@ for list in arr:
         plt.plot([list[i][0]+0.5,list[i][2]+0.5], [list[i][1]+0.5, list[i][3]+0.5], color=col)
     
 
-
-
 plt.xlabel("X")
 plt.ylabel("Y")
 plt.title("routing")
@@ -105,6 +104,10 @@ plt.xticks(major_ticks_top_x)
 plt.yticks(major_ticks_top_y)
 plt.xlim(0, inputsize[0])
 plt.ylim(0, inputsize[1])
+# plt.gca().invert_yaxis()
+# plt.title('Inverted Y-axis')
 ax.grid(True, linestyle='--', linewidth=1, color='gray')
 
+
+print(f"總共有{overflow}條overflow")
 plt.show()
