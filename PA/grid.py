@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 # 檔案路徑
-file_path = r'C:\Users\jason\OneDrive\文件\GitHub\Algorithm-2023\PA\output.txt'
+file_path = r'C:\Users\jason\OneDrive\文件\GitHub\Algorithm-2023\PA\60x60.out'
 inputsize = [60,60]
 capacity = 45
 

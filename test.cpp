@@ -16,14 +16,26 @@ struct Node {
     Point parent;
 };
 
-int bfs(vector<vector<char>>& maze, Point start, Point end, vector<vector<Node>>& nodeInfo,vector<Point>& pointlist,int capacity) {
-    int rows = maze.size();
-    int cols = maze[0].size();
-    vector<vector<short>> x_edge;
-    vector<vector<short>> y_edge;
-    x_edge.resize(rows - 1, vector<short>(cols, 0));
-    y_edge.resize(rows, vector<short>(cols - 1, 0));
-    vector<vector<bool>> visited(rows, vector<bool>(cols, false));
+class routing{
+    private:
+        int nets,row,column,capacity;
+        vector<vector<char>> maze;
+        vector<vector<Node>> nodeInfo;
+        vector<vector<Point>> Allpoint;
+        vector<vector<short>> horizontal_edge;
+        vector<vector<short>> vertical_edge;
+    public:
+        void readfile();
+        int bfs(vector<vector<char>>& maze, Point start, Point end, vector<vector<Node>>& nodeInfo,vector<Point>& pointlist,int capacity);
+        void outputfile();
+        void test();
+};
+void routing::test(){
+    cout<<"start"<< vertical_edge[59][45]<<endl;
+}
+int routing::bfs(vector<vector<char>>& maze, Point start, Point end, vector<vector<Node>>& nodeInfo,vector<Point>& pointlist,int capacity) {
+    
+    vector<vector<bool>> visited(row, vector<bool>(column, false));
     queue<Node> q;
 
     Node startNode = {start, 0, {-1, -1}};
@@ -33,7 +45,8 @@ int bfs(vector<vector<char>>& maze, Point start, Point end, vector<vector<Node>>
 
     int dr[] = {-1, 0, 1, 0};
     int dc[] = {0, 1, 0, -1};
-
+    bool pass;
+            
     while (!q.empty()) {
         Node current = q.front();
         q.pop();
@@ -57,13 +70,63 @@ int bfs(vector<vector<char>>& maze, Point start, Point end, vector<vector<Node>>
         for (int i = 0; i < 4; ++i) {
             int newRow = current.point.row + dr[i];
             int newCol = current.point.col + dc[i];
-
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols &&
-                maze[newRow][newCol] != '#' && !visited[newRow][newCol]) {
-                Node newNode = {{newRow, newCol}, current.distance + 1, current.point};
-                q.push(newNode);
-                visited[newRow][newCol] = true;
-                nodeInfo[newRow][newCol] = newNode;
+            // cout << "i = "<<i<<endl;
+            
+            pass = false;
+            // cout<<"start"<< vertical_edge[59][22]<<endl;
+            
+            // && maze[newRow][newCol] != '#' 
+            if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < column && !visited[newRow][newCol]) {
+                cout << "i = "<< i <<endl;
+                cout <<"current.point.row = " <<current.point.row << endl;
+                cout <<"current.point.col = " <<current.point.col << endl;
+                
+                switch(i){
+                case 0:
+                    // cout <<"current.point.row = " <<current.point.row-1 << endl;
+                    // cout <<"current.point.col = " <<current.point.col << endl;
+                    cout << "capacity = " << horizontal_edge[current.point.row-1][current.point.col]<<endl;
+                    cout << endl;
+                    if(horizontal_edge[current.point.row-1][current.point.col]<capacity){
+                        horizontal_edge[current.point.row-1][current.point.col] += 1;
+                        pass = true;
+                    }    
+                break;
+                case 1:
+                    cout << "capacity = " << vertical_edge[current.point.row][current.point.col]<<endl;
+                    cout << endl;
+                    if(vertical_edge[current.point.row][current.point.col]<capacity){
+                        vertical_edge[current.point.row][current.point.col] += 1;
+                        pass = true;
+                    }  
+                break;
+                case 2:
+                    cout << "capacity = " << horizontal_edge[current.point.row][current.point.col]<<endl;
+                    cout << endl;
+                    // cout <<"current.point.row = " <<current.point.row << endl;
+                    // cout <<"current.point.col = " <<current.point.col << endl;
+                    if(horizontal_edge[current.point.row][current.point.col]<capacity){
+                        horizontal_edge[current.point.row][current.point.col] += 1;
+                        pass = true;
+                    }  
+                break;
+                case 3:
+                    cout << "capacity = " << vertical_edge[current.point.row][current.point.col-1]<<endl;
+                    cout << endl;
+                    // cout <<"current.point.row = " <<current.point.row << endl;
+                    // cout <<"current.point.col = " <<current.point.col-1 << endl;
+                    if(vertical_edge[current.point.row][current.point.col-1]<capacity){
+                        vertical_edge[current.point.row][current.point.col-1] += 1;
+                        pass = true;
+                    }
+                break;
+                }
+                if(pass){
+                    Node newNode = {{newRow, newCol}, current.distance + 1, current.point};
+                    q.push(newNode);
+                    visited[newRow][newCol] = true;
+                    nodeInfo[newRow][newCol] = newNode;
+                }
             }
         }
     }
@@ -71,9 +134,8 @@ int bfs(vector<vector<char>>& maze, Point start, Point end, vector<vector<Node>>
     return -1; // No path found
 }
 
-int main() {
-    int nets,row,column,capacity;
-    ifstream fin("20x20.in",ios::in);
+void routing::readfile(){
+    ifstream fin("60x60.in",ios::in);
     
     char buffer[100];
     fin >> buffer;
@@ -104,7 +166,7 @@ int main() {
 		fin >> buffer;
 		nets = atoi(buffer);
 	}
-    vector<vector<Point>> Allpoint(nets, vector<Point>(2, {0,0}));
+    Allpoint.resize(nets, vector<Point>(2, {0,0}));
 	for (int i = 0; i < nets; ++i) {
 		fin >> buffer;
 		int netID = atoi(buffer);
@@ -119,22 +181,31 @@ int main() {
         Allpoint[i][0] = {sx,sy};
         Allpoint[i][1] = {tx,ty};
 	}
-    
-    const char* file_path = "output.txt";
-    ofstream outputFile(file_path);
+    maze.resize(row, vector<char>(column,'.'));
+    nodeInfo.resize(row, vector<Node>(column));
+    horizontal_edge.resize(row - 1, vector<short>(column, 0));
+    vertical_edge.resize(row, vector<short>(column - 1, 0));
+}
 
-    vector<vector<char>> maze(row, vector<char>(column,'.'));
-    vector<vector<Node>> nodeInfo(row, vector<Node>(column)); // 用於保存每個節點的信息
+void routing::outputfile(){
+    const char* file_path = "60x60.out";
+    ofstream outputFile(file_path);
+     
     for(int i=0;i<nets;i++){
         vector<Point> pointlist;
+        cout<< "number_of_nets_is  "<< i <<endl;
         int result = bfs(maze, Allpoint[i][0], Allpoint[i][1], nodeInfo,pointlist,capacity);
         outputFile << i << " " << result<<endl;
         for(int i=0;i<pointlist.size()-1;i++){
-            outputFile << pointlist[i].col<<" "<<pointlist[i].row <<" "<<pointlist[i+1].col<<" "<<pointlist[i+1].row << endl;
-
+            outputFile << pointlist[i].row<<" "<<pointlist[i].col <<" "<<pointlist[i+1].row<<" "<<pointlist[i+1].col << endl;
         }
     }
     outputFile.close();
-    
+}
+int main() {
+    routing PA2;
+    PA2.readfile();
+    PA2.test();
+    PA2.outputfile();
     return 0;
 }
