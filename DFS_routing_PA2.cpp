@@ -72,55 +72,55 @@ int routing::bfs(vector<vector<char>>& maze, Point start, Point end, vector<vect
             int newCol = current.point.col + dc[i];
             // cout << "i = "<<i<<endl;
             
-            pass = false;
+            pass = true;
             // cout<<"start"<< vertical_edge[59][22]<<endl;
             
             // && maze[newRow][newCol] != '#' 
             if (newRow >= 0 && newRow < row && newCol >= 0 && newCol < column && !visited[newRow][newCol]) {
-                cout << "i = "<< i <<endl;
-                cout <<"current.point.row = " <<current.point.row << endl;
-                cout <<"current.point.col = " <<current.point.col << endl;
-                
-                switch(i){
-                case 0:
-                    // cout <<"current.point.row = " <<current.point.row-1 << endl;
-                    // cout <<"current.point.col = " <<current.point.col << endl;
-                    cout << "capacity = " << horizontal_edge[current.point.row-1][current.point.col]<<endl;
-                    cout << endl;
-                    if(horizontal_edge[current.point.row-1][current.point.col]<capacity){
-                        horizontal_edge[current.point.row-1][current.point.col] += 1;
-                        pass = true;
-                    }    
-                break;
-                case 1:
-                    cout << "capacity = " << vertical_edge[current.point.row][current.point.col]<<endl;
-                    cout << endl;
-                    if(vertical_edge[current.point.row][current.point.col]<capacity){
-                        vertical_edge[current.point.row][current.point.col] += 1;
-                        pass = true;
-                    }  
-                break;
-                case 2:
-                    cout << "capacity = " << horizontal_edge[current.point.row][current.point.col]<<endl;
-                    cout << endl;
-                    // cout <<"current.point.row = " <<current.point.row << endl;
-                    // cout <<"current.point.col = " <<current.point.col << endl;
-                    if(horizontal_edge[current.point.row][current.point.col]<capacity){
-                        horizontal_edge[current.point.row][current.point.col] += 1;
-                        pass = true;
-                    }  
-                break;
-                case 3:
-                    cout << "capacity = " << vertical_edge[current.point.row][current.point.col-1]<<endl;
-                    cout << endl;
-                    // cout <<"current.point.row = " <<current.point.row << endl;
-                    // cout <<"current.point.col = " <<current.point.col-1 << endl;
-                    if(vertical_edge[current.point.row][current.point.col-1]<capacity){
-                        vertical_edge[current.point.row][current.point.col-1] += 1;
-                        pass = true;
-                    }
-                break;
-                }
+//                cout << "i = "<< i <<endl;
+//                cout <<"current.point.row = " <<current.point.row << endl;
+//                cout <<"current.point.col = " <<current.point.col << endl;
+//                
+//                switch(i){
+//                case 0:
+//                    // cout <<"current.point.row = " <<current.point.row-1 << endl;
+//                    // cout <<"current.point.col = " <<current.point.col << endl;
+//                    cout << "capacity = " << horizontal_edge[current.point.row-1][current.point.col]<<endl;
+//                    cout << endl;
+//                    if(horizontal_edge[current.point.row-1][current.point.col]<capacity){
+//                        horizontal_edge[current.point.row-1][current.point.col] += 1;
+//                        pass = true;
+//                    }    
+//                break;
+//                case 1:
+//                    cout << "capacity = " << vertical_edge[current.point.row][current.point.col]<<endl;
+//                    cout << endl;
+//                    if(vertical_edge[current.point.row][current.point.col]<capacity){
+//                        vertical_edge[current.point.row][current.point.col] += 1;
+//                        pass = true;
+//                    }  
+//                break;
+//                case 2:
+//                    cout << "capacity = " << horizontal_edge[current.point.row][current.point.col]<<endl;
+//                    cout << endl;
+//                    // cout <<"current.point.row = " <<current.point.row << endl;
+//                    // cout <<"current.point.col = " <<current.point.col << endl;
+//                    if(horizontal_edge[current.point.row][current.point.col]<capacity){
+//                        horizontal_edge[current.point.row][current.point.col] += 1;
+//                        pass = true;
+//                    }  
+//                break;
+//                case 3:
+//                    cout << "capacity = " << vertical_edge[current.point.row][current.point.col-1]<<endl;
+//                    cout << endl;
+//                    // cout <<"current.point.row = " <<current.point.row << endl;
+//                    // cout <<"current.point.col = " <<current.point.col-1 << endl;
+//                    if(vertical_edge[current.point.row][current.point.col-1]<capacity){
+//                        vertical_edge[current.point.row][current.point.col-1] += 1;
+//                        pass = true;
+//                    }
+//                break;
+//                }
                 if(pass){
                     Node newNode = {{newRow, newCol}, current.distance + 1, current.point};
                     q.push(newNode);
@@ -193,7 +193,7 @@ void routing::outputfile(){
      
     for(int i=0;i<nets;i++){
         vector<Point> pointlist;
-        cout<< "number_of_nets_is  "<< i <<endl;
+//        cout<< "number_of_nets_is  "<< i <<endl;
         int result = bfs(maze, Allpoint[i][0], Allpoint[i][1], nodeInfo,pointlist,capacity);
         outputFile << i << " " << result<<endl;
         for(int i=0;i<pointlist.size()-1;i++){

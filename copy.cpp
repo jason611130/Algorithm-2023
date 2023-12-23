@@ -60,10 +60,10 @@ void graph::showgraph() {
 void graph::relax(short col1,short row1,short col2,short row2){
     short w;
     
-    // cout << "row1 = ("<< row1 <<") = col1 = ("<<col1<<")"<<endl;
-    // cout << "row2 = ("<< row2 <<") = col2 = ("<<col2<<")"<<endl;
-    // cout << "array_2D["<<row1<<"]["<<col1<<"].val = "<<array_2D[row1][col1].val <<endl;
-    // cout << "array_2D["<<row1<<"]["<<col1<<"].val = "<<array_2D[row2][col2].val <<endl;
+    cout << "row1 = ("<< row1 <<") = col1 = ("<<col1<<")"<<endl;
+    cout << "row2 = ("<< row2 <<") = col2 = ("<<col2<<")"<<endl;
+    cout << "array_2D["<<row1<<"]["<<col1<<"].val = "<<array_2D[row1][col1].val <<endl;
+    cout << "array_2D["<<row1<<"]["<<col1<<"].val = "<<array_2D[row2][col2].val <<endl;
     if(col2-col1==1){
         // cout<<"right"<<endl;
         w = this->col_edge[row1][col1];
@@ -85,8 +85,8 @@ void graph::relax(short col1,short row1,short col2,short row2){
     if(this->array_2D[row2][col2].val>this->array_2D[row1][col1].val+w){
         this->array_2D[row2][col2].parent = &this->array_2D[row1][col1];
         this->array_2D[row2][col2].val = this->array_2D[row1][col1].val+w;
-        // cout << "w = " << w <<endl;
-        // cout << "                                       change   array_2D["<<row2<<"]["<<col2<<"].val = "<<this->array_2D[row2][col2].val <<endl;
+        cout << "w = " << w <<endl;
+        cout << "                                       change   array_2D["<<row2<<"]["<<col2<<"].val = "<<this->array_2D[row2][col2].val <<endl;
     }
 }
 void graph::routing(short row1, short col1, short row2,short col2){
@@ -112,8 +112,8 @@ void graph::routing(short row1, short col1, short row2,short col2){
     //     cout<<"target is right up"<<endl;
     // }
     
-    vector<Point*> q;
-    vector<Point*> p;    
+    vector<Point> q;
+    vector<Point> p;    
     Point *link_list;
     for(int i=0;i<row_size;i++){
         for(int j=0;j<col_size;j++){
@@ -121,28 +121,28 @@ void graph::routing(short row1, short col1, short row2,short col2){
             this->array_2D[i][j].col = j;
             this->array_2D[i][j].row = i;
             this->array_2D[i][j].parent = NULL;
-            q.push_back(&array_2D[i][j]);
+            q.push_back(array_2D[i][j]);
         }
     }
 
     while(!q.empty()){
-        // cout << endl;
-        minimun = q[0]->val;
-        // cout << "("<<q[0]->row<<","<<q[0]->col<<")";
-        // cout << q[0]->val<<endl;
+        cout << endl;
+        minimun = q[0].val;
+        cout << "("<<q[0].row<<","<<q[0].col<<")";
+        cout << q[0].val<<endl;
         for(int i=0;i<q.size()-1;i++){
-            minimun = minimun<q[i+1]->val?minimun:q[i+1]->val;
-            // cout << "("<<q[i+1]->row<<","<<q[i+1]->col<<")";
-            // cout << q[i+1]->val<<endl;
+            minimun = minimun<q[i+1].val?minimun:q[i+1].val;
+            cout << "("<<q[i+1].row<<","<<q[i+1].col<<")";
+            cout << q[i+1].val<<endl;
         }
         cnt = 0;
-        // cout << "minimun = " << minimun <<endl;
+        cout << "minimun = " << minimun <<endl;
         for(int i=0;i<q.size();i++){
 
-            if(minimun==q[i]->val&&cnt==0){
-                minimun = q[i]->val;
-                min_col = q[i]->col;
-                min_row = q[i]->row;
+            if(minimun==q[i].val&&cnt==0){
+                minimun = q[i].val;
+                min_col = q[i].col;
+                min_row = q[i].row;
                 
                 cnt=1;
             }
@@ -151,22 +151,22 @@ void graph::routing(short row1, short col1, short row2,short col2){
             }
         }
         
-        // cout << "min_row,min_col = (" << min_row << ","<<min_col<<")"<<endl;
+        cout << "min_row,min_col = (" << min_row << ","<<min_col<<")"<<endl;
         
 
         if(p.empty()){
             short bfr_col,bfr_row,now_col,now_row;
             link_list = &array_2D[row2][col2];
-            // for(int i=0;i<array_2D.size();i++){
-            //     for(int j=0;j<array_2D[0].size();j++){
-            //         if(array_2D[i][j].parent==NULL){
-            //             cout << "array_2D["<<i<<"]["<<j<<"].parent = "<<"NULL"<<endl;
-            //         }
-            //         else{
-            //             cout<< "array_2D["<<i<<"]["<<j<<"].parent = "<< array_2D[i][j].parent<<endl;
-            //         }
-            //     }
-            // }
+            for(int i=0;i<array_2D.size();i++){
+                for(int j=0;j<array_2D[0].size();j++){
+                    if(array_2D[i][j].parent==NULL){
+                        cout << "array_2D["<<i<<"]["<<j<<"].parent = "<<"NULL"<<endl;
+                    }
+                    else{
+                        cout<< "array_2D["<<i<<"]["<<j<<"].parent = "<< array_2D[i][j].parent<<endl;
+                    }
+                }
+            }
             while(link_list!= NULL){
                 cout << "( " << link_list->row << "," << link_list->col <<" )"<<endl;
                 
@@ -211,11 +211,11 @@ void graph::retrace(){
     
 }
 int main() {
-    graph myGraph(5, 5, 2);
-    for(int i=0;i<5;i++){
-        myGraph.routing(4,0,0,4);
-        cout<<endl;
-    }
+    graph myGraph(3, 3, 2);
+    // for(int i=0;i<40;i++){
+        myGraph.routing(0,0,2,2);
+    // }
+    // myGraph.showgraph();
     
     return 0;
 }
