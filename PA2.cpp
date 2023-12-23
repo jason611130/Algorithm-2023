@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <fstream>
 using namespace std;
 typedef struct Point{
     short col;
@@ -11,52 +12,43 @@ class graph {
 private:
     int col_size;
     int row_size;
+    int nets;
     short nowcol;
     short nowrow;
     short point = 0;
-    short capacity = 0;
+    int capacity = 0;
+    vector<vector<short>> Allpoint;
     vector<vector<short>> col_edge;
     vector<vector<short>> row_edge;
     vector<vector<Point>> array_2D;
+    stack<Point> pointlist;
+
 public:
     
-    graph(short col_size, short row_size, short cap);
-    void showgraph();
+    // graph(short col_size, short row_size, short cap);
     void routing(short col1, short row1, short col2, short row2);
     void relax(short col1,short row1,short col2,short row2);
-    void retrace();
+    void readfile();
+    void outputfile();
 };
-graph::graph(short col_size, short row_size, short cap) : col_size(col_size), row_size(row_size), capacity(cap) {
+// graph::graph(short col_size, short row_size, short cap) : col_size(col_size), row_size(row_size), capacity(cap) {
     
-    Point init;
-    init.parent = NULL;
-    init.val = 0;
-    init.col = 0;
-    init.row = 0;
+//     Point init;
+//     init.parent = NULL;
+//     init.val = 0;
+//     init.col = 0;
+//     init.row = 0;
 
-    col_edge.resize(row_size, vector<short>(col_size-1, 1));
-    // col_edge.resize(100, vector<short>(100, 1));
-    row_edge.resize(row_size, vector<short>(col_size, 1));
-    array_2D.resize(row_size, vector<Point>(col_size , init));
-    capacity = cap;
-    cout<<"row_size = "<<row_size<<" col_size = "<<col_size<<endl;
-    cout<<"col_edge.size() = "<<col_edge.size()<<endl;
-    cout<<"col_edge[0].size() = " << col_edge[0].size()<<endl;
-}
-void graph::showgraph() {
-    for (int i = 0; i < row_size - 1; i++) {
-        for (int j = 0; j < col_size; j++) {
-            cout << col_edge[i][j] << " ";
-        }
-        cout << endl;
-    }
-    for (int i = 0; i < row_size; i++) {
-        for (int j = 0; j < col_size - 1; j++) {
-            cout << row_edge[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
+//     col_edge.resize(row_size, vector<short>(col_size-1, 1));
+//     // col_edge.resize(100, vector<short>(100, 1));
+//     row_edge.resize(row_size, vector<short>(col_size, 1));
+//     array_2D.resize(row_size, vector<Point>(col_size , init));
+//     capacity = cap;
+//     cout<<"row_size = "<<row_size<<" col_size = "<<col_size<<endl;
+//     cout<<"col_edge.size() = "<<col_edge.size()<<endl;
+//     cout<<"col_edge[0].size() = " << col_edge[0].size()<<endl;
+// }
+
 void graph::relax(short col1,short row1,short col2,short row2){
     short w;
     
@@ -168,10 +160,14 @@ void graph::routing(short row1, short col1, short row2,short col2){
             //     }
             // }
             while(link_list!= NULL){
-                cout << "( " << link_list->row << "," << link_list->col <<" )"<<endl;
                 
+                // cout << "( " << link_list->row << "," << link_list->col <<" )"<<endl;
                 bfr_col = link_list->col;
                 bfr_row = link_list->row;
+                Point P;
+                P.col = bfr_col;
+                P.row = bfr_row;
+                pointlist.push(P);
                 link_list = link_list->parent;
                 
                 if(link_list != NULL){
@@ -207,15 +203,97 @@ void graph::routing(short row1, short col1, short row2,short col2){
     }   
 }
 
-void graph::retrace(){
+void graph::readfile(){
+    ifstream fin("60x60.in",ios::in);
     
-}
-int main() {
-    graph myGraph(5, 5, 2);
-    for(int i=0;i<5;i++){
-        myGraph.routing(4,0,0,4);
-        cout<<endl;
+    char buffer[100];
+    fin >> buffer;
+    string s = buffer;
+
+	if (s == "grid") {
+		fin >> buffer;
+		row_size = atoi(buffer);
+
+		fin >> buffer;
+		col_size = atoi(buffer);
     }
+
+	fin >> buffer;
+	s = buffer;
+
+	if (s == "capacity") {
+		fin >> buffer;
+		capacity = atoi(buffer);
+	}
+
+	fin >> buffer;
+	s = buffer;
+	fin >> buffer;
+	s = buffer;
+
+	if (s == "net") {
+		fin >> buffer;
+		nets = atoi(buffer);
+	}
+    Allpoint.resize(nets, vector<short>(4, 0));
+	for (int i = 0; i < nets; ++i) {
+		fin >> buffer;
+		int netID = atoi(buffer);
+		fin >> buffer;
+		int sx = atoi(buffer);
+		fin >> buffer;
+		int sy = atoi(buffer);
+		fin >> buffer;
+		int tx = atoi(buffer);
+		fin >> buffer;
+		int ty = atoi(buffer);
+        Allpoint[i][0] = sx;
+        Allpoint[i][1] = sy;
+        Allpoint[i][2] = tx;
+        Allpoint[i][3] = ty;
+	}
+
+    Point init;
+    init.parent = NULL;
+    init.val = 0;
+    init.col = 0;
+    init.row = 0;
+
+    col_edge.resize(row_size, vector<short>(col_size-1, 1));
+    // col_edge.resize(100, vector<short>(100, 1));
+    row_edge.resize(row_size, vector<short>(col_size, 1));
+    array_2D.resize(row_size, vector<Point>(col_size , init));
+
+}
+
+void graph::outputfile(){
+    const char* file_path = "60x60.out";
+    ofstream outputFile(file_path);
+    
+    vector<Point> P;
+    
+    short tmpcol,tmprow;
+    for(int i=0;i<nets;i++){
+        
+        routing(Allpoint[i][0],Allpoint[i][1],Allpoint[i][2],Allpoint[i][3]);
+        cout<<i<<endl;
+        outputFile << i << " "<<pointlist.size()-1<<endl;
+        while(!pointlist.empty()){
+            P.push_back(pointlist.top());
+            pointlist.pop();
+        }
+        for(int i=0;i<P.size()-1;i++){
+            outputFile<< P[i].col  << " "<<P[i].row << " "<<P[i+1].col  << " "<<P[i+1].row<<endl;
+        }
+        P.clear();
+    }
+    outputFile.close();
+}
+
+int main() {
+    graph PA2;
+    PA2.readfile();
+    PA2.outputfile();
     
     return 0;
 }
