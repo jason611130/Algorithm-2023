@@ -93,7 +93,7 @@ void graph::routing(short row1, short col1, short row2,short col2){
     }
     Point* temp;
     pq.push(&array_2D[row1][col1]);
-    while(!pq.empty()){
+    while(!(min_col==col2&&min_row==row2)){
         
         temp = pq.top();
         // cout << temp->val<<endl;
