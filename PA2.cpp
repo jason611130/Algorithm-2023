@@ -8,6 +8,12 @@ typedef struct Point{
     Point *parent;
 }Point;
 
+struct Compare {
+    bool operator()(const Point& a, const Point& b) {
+        return a.val > b.val; // 使用 val 作為比較依據
+    }
+};
+
 class graph {
 private:
     int col_size;
@@ -107,46 +113,35 @@ void graph::routing(short row1, short col1, short row2,short col2){
     vector<Point*> q;
     vector<Point*> p;    
     Point *link_list;
+    priority_queue<Point, vector<Point>, Compare> pq;
+
     for(int i=0;i<row_size;i++){
         for(int j=0;j<col_size;j++){
             this->array_2D[i][j].val = i==row1&&j==col1?0:SHRT_MAX;
             this->array_2D[i][j].col = j;
             this->array_2D[i][j].row = i;
             this->array_2D[i][j].parent = NULL;
-            q.push_back(&array_2D[i][j]);
+            pq.push(array_2D[i][j]);
         }
     }
 
-    while(!q.empty()){
+    while(!pq.empty()){
         // cout << endl;
-        minimun = q[0]->val;
-        // cout << "("<<q[0]->row<<","<<q[0]->col<<")";
-        // cout << q[0]->val<<endl;
-        for(int i=0;i<q.size()-1;i++){
-            minimun = minimun<q[i+1]->val?minimun:q[i+1]->val;
-            // cout << "("<<q[i+1]->row<<","<<q[i+1]->col<<")";
-            // cout << q[i+1]->val<<endl;
-        }
-        cnt = 0;
-        // cout << "minimun = " << minimun <<endl;
-        for(int i=0;i<q.size();i++){
-
-            if(minimun==q[i]->val&&cnt==0){
-                minimun = q[i]->val;
-                min_col = q[i]->col;
-                min_row = q[i]->row;
-                
-                cnt=1;
-            }
-            else{
-                p.push_back(q[i]);
-            }
-        }
+        min_col = pq.top().col;
+        min_row = pq.top().row;
+        pq.pop();
         
         // cout << "min_row,min_col = (" << min_row << ","<<min_col<<")"<<endl;
-        
+        for(int i=0;i<4;i++){       
+            short new_col = min_col+col_dir[i];
+            short new_row = min_row+row_dir[i];
+            
+            if(new_col<col_size&&new_row<row_size&&new_col>=0&&new_row>=0){
+                relax(min_col,min_row,new_col,new_row);
+            }
+        }
 
-        if(p.empty()){
+        if((min_col==col2&&min_row==row2)){
             short bfr_col,bfr_row,now_col,now_row;
             link_list = &array_2D[row2][col2];
             // for(int i=0;i<array_2D.size();i++){
@@ -190,16 +185,6 @@ void graph::routing(short row1, short col1, short row2,short col2){
             break;
         }
         
-        for(int i=0;i<4;i++){       
-            short new_col = min_col+col_dir[i];
-            short new_row = min_row+row_dir[i];
-            
-            if(new_col<col_size&&new_row<row_size&&new_col>=0&&new_row>=0){
-                relax(min_col,min_row,new_col,new_row);
-            }
-        }
-        q = p;
-        p.clear();
     }   
 }
 
@@ -283,7 +268,7 @@ void graph::outputfile(){
             pointlist.pop();
         }
         for(int i=0;i<P.size()-1;i++){
-            outputFile<< P[i].col  << " "<<P[i].row << " "<<P[i+1].col  << " "<<P[i+1].row<<endl;
+            outputFile<< P[i].row  << " "<<P[i].col<< " "<<P[i+1].row  << " "<<P[i+1].col<<endl;
         }
         P.clear();
     }
