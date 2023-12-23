@@ -80,7 +80,7 @@ void graph::routing(short row1, short col1, short row2,short col2){
     short row_dir[4] = {-1,0,1,0};
     short min_row = 0;
     short min_col = 0;
-    
+    bool jump_out = false;
     priority_queue<Point*, vector<Point*>, Compare> pq;
 
     for(int i=0;i<row_size;i++){
@@ -92,14 +92,15 @@ void graph::routing(short row1, short col1, short row2,short col2){
         }
     }
     Point* temp;
+
     pq.push(&array_2D[row1][col1]);
-    while(!(min_col==col2&&min_row==row2)){
+    while(!(min_col==col2&&min_row==row2&&jump_out)){
         
         temp = pq.top();
         // cout << temp->val<<endl;
         min_col = temp->col;
         min_row = temp->row;
-        
+        jump_out = true;
         
         // cout << "min_row,min_col = (" << min_row << ","<<min_col<<")"<<endl;
         for(int i=0;i<4;i++){       
