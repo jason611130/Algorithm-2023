@@ -23,7 +23,9 @@ private:
     int nowrow;
     int point = 0;
     int capacity = 0;
-    int scol,srow;  
+    int scol,srow;
+    int col_dir[4] ;
+    int row_dir[4] ;
     vector<vector<int>> Allpoint;
     vector<vector<int>> col_edge;
     vector<vector<int>> row_edge;
@@ -41,39 +43,75 @@ public:
 
 
 void graph::routing(int row1, int col1, int row2,int col2){
-    
-    if(col2-col1>0&&row2-row1>0){
-	    int col_dir[4] = {1,0,0,-1};
-        int row_dir[4] = {0,1,-1,0};  
-	}
-	else if(col2-col1>0&&row2-row1<-1){
-	    int col_dir[4] = {1,0,0,-1};
-        int row_dir[4] = {0,-1,1,0};    
-	}
-	else if(col2-col1<-1&&row2-row1<-1){
-	    int col_dir[4] = {-1,0,0,1};
-        int row_dir[4] = {0,-1,1,0};  
-	}
-	else if(col2-col1<0&&row2-row1>0){
-	    int col_dir[4] = {-1,0,0,1};
-        int row_dir[4] = {0,1,-1,0};  
+    int col_dir[4];
+    int row_dir[4];
+
+    if (col2 - col1 > 0 && row2 - row1 > 0) {
+        int col_arr[] = {1, 0, 0, -1};
+        int row_arr[] = {0, 1, -1, 0};
+
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
     }
-    else if(col2-col1==0&&row2-row1>0){
-        int col_dir[4] = {0,-1,1,0};
-        int row_dir[4] = {-1,0,0,1}; 
+    else if (col2 - col1 > 0 && row2 - row1 < -1) {
+        int col_arr[] = {1, 0, 0, -1};
+        int row_arr[] = {0, -1, 1, 0};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
     }
-    else if(col2-col1==0&&row2-row1<0){
-        int col_dir[4] = {0,-1,1,0};
-        int row_dir[4] = {1,0,0,1}; 
+    else if (col2 - col1 < -1 && row2 - row1 < -1) {
+        int col_arr[] = {-1, 0, 0, 1};
+        int row_arr[] = {0, -1, 1, 0};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
     }
-    else if(col2-col1>0&&row2-row1==0){
-        int col_dir[4] = {1,0,0,-1};
-        int row_dir[4] = {0,-1,1,0}; 
+    else if (col2 - col1 < 0 && row2 - row1 > 0) {
+        int col_arr[] = {-1, 0, 0, 1};
+        int row_arr[] = {0, 1, -1, 0};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
+    }
+    else if (col2 - col1 == 0 && row2 - row1 > 0) {
+        int col_arr[] = {0, -1, 1, 0};
+        int row_arr[] = {-1, 0, 0, 1};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
+    }
+    else if (col2 - col1 == 0 && row2 - row1 < 0) {
+        int col_arr[] = {0, -1, 1, 0};
+        int row_arr[] = {1, 0, 0, -1};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
+    }
+    else if (col2 - col1 > 0 && row2 - row1 == 0) {
+        int col_arr[] = {1, 0, 0, -1};
+        int row_arr[] = {0, -1, 1, 0};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
     }
     else {
-        int col_dir[4] = {-1,0,0,1};
-        int row_dir[4] = {0,-1,1,0}; 
+        int col_arr[] = {-1, 0, 0, 1};
+        int row_arr[] = {0, -1, 1, 0};
+        for (int i = 0; i < 4; i++) {
+            col_dir[i] = col_arr[i];
+            row_dir[i] = row_arr[i];
+        }
     }
+    
     int min_row = 0;
     int min_col = 0;
     bool jump_out = false;

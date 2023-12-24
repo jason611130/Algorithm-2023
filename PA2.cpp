@@ -243,7 +243,7 @@ void graph::readfile(){
 
     col_edge.resize(row_size, vector<short>(col_size-1, 1));
     // col_edge.resize(100, vector<short>(100, 1));
-    row_edge.resize(row_size, vector<short>(col_size, 1));
+    row_edge.resize(col_size-1, vector<short>(row_size, 1));
     array_2D.resize(row_size, vector<Point>(col_size , init));
 
 }
